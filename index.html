@@ -1,32 +1,42 @@
-<html>
+<!DOCTYPE html>
   <head>
-    <title>Google recapcha demo - V2</title>
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <title>Google reCAPTHA - V2</title>
+    <script src="https://www.google.com/recaptcha/api.js"
+    async defer>
+    </script>
   </head>
   <body>
-    <h1>Google reCAPTHA Demo</h1>
-    <form id="comment_form" action='/submit' method="post">
+    <h1>Google reCAPTHA V2</h1>
+    <form id="comment_form">
       <input type="email" placeholder="Type your email" size="40"><br><br>
       <textarea name="comment" rows="8" cols="39"></textarea><br><br>
-      <div class="g-recaptcha" data-sitekey="6LcidHgjAAAAAIoGuYe-JKfv1kLJ-sodWeoUul4I"></div><br>
-      <input type="submit" name="submit" value="Post comment"><br><br>
+      <div class="g-recaptcha" data-sitekey="6LdtV3wjAAAAAM92woSqZviVPnNeX_aEQZCJm6Mp"></div><br>
+      <button type="button" id="submit" name="submit">Submit</button><br><br>
     </form>
   </body>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
   <script>
     $(document).ready(function() {
-      $('#comment_form').submit(function() {
-        $(this).ajaxSubmit({
-          error: function(xhr) {
-            status('Error: ' + xhr.status);
-          },
-         success: function(response) {
-          console.log(response);
-         }
-        });
-        //Very important line, it disable the page refresh.
-        return false;
+      $("#submit").click(function(){
+        const response = grecaptcha.getResponse();
+        console.log('grecaptcha ===', response);
+        if(response.length == 0)
+        { 
+          //reCaptcha not verified
+          alert("please verify you are humann!"); 
+          evt.preventDefault();
+          return false;
+        }        
+
+        $.ajax({
+          url: 'https://api.dev.com/api/recaptcha',
+          type: "post",
+          data: "g-recaptcha-response=" + response,
+          success: function(data) {
+            console.log('response api ======', data);
+          }
+        })        
       });
     });
   </script>
