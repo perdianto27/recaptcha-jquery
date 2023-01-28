@@ -1,2 +1,2 @@
-# Google reCAPTHA - V2
+# Validation using Google reCAPTHA - V2
 # http request using jquery ajax
